@@ -1,49 +1,36 @@
 const fs = require("fs");
-const path = require("path");
 
-const pathToDir = "./test_files";
-const pathToFile = "./test_files/info.dat";
+const pathToUser = "./jsons/user.json";
+const pathToUser2 = "./jsons/user2.json";
 
-// Checking if the folder exists
-const folderExists = () => {
-  fs.existsSync(pathToDir) ? console.log("Yes") : console.log("No");
+// Reading the json file
+const data = fs.readFileSync(pathToUser, "utf-8");
+const dataToObj = JSON.parse(data);
+console.log(dataToObj);
+
+// Writing the json file
+const obj = {
+  name: "John Smith",
+  age: 25,
+  email: "john.smith@example.com",
+  address: {
+    street: "123 Main Street",
+    city: "New York",
+    state: "NY",
+    postalCode: "10001",
+  },
+  interests: ["hiking", "photography", "reading"],
+  education: [
+    {
+      degree: "Bachelor of Science",
+      major: "Computer Science",
+      university: "ABC University",
+    },
+    {
+      degree: "Master of Business Administration",
+      major: "Finance",
+      university: "XYZ University",
+    },
+  ],
 };
-// folderExists();
-
-// Checking if the file exists
-const fileExists = () => {
-  fs.existsSync(pathToFile) ? console.log("Yes") : console.log("No");
-};
-// fileExists();
-
-// Calculating size of the file
-const calculatingFile = () => {
-  const fileSize = fs.statSync(pathToFile).size;
-  console.log(fileSize);
-};
-// calculatingFile();
-
-//Using path methods
-const pathMethods = () => {
-  console.log(path.basename(pathToFile)); // File name
-  console.log(path.dirname(pathToFile)); // File directory name
-  console.log(path.extname(pathToFile)); // File extension
-  console.log(path.parse(pathToFile)); // All about the file
-};
-// pathMethods();
-
-// Getting files and directories in the directory
-const infoDir = () => {
-  const allFiles = fs.readdirSync(pathToDir);
-  // console.log(allFiles);
-  let out = "";
-  allFiles.forEach((file) => {
-    out += file + "\n";
-  });
-  console.log(out);
-};
-// infoDir();
-
-// Getting an absolute path
-const directoryPath = path.join(__dirname, "test_files");
-// console.log(directoryPath);
+fs.writeFileSync(pathToUser2, JSON.stringify(obj), "utf-8");
