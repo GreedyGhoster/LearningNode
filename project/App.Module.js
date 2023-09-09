@@ -46,4 +46,4 @@ const infoDir = () => {
 
 // Getting an absolute path
 const directoryPath = path.join(__dirname, "test_files");
-console.log(directoryPath);
+// console.log(directoryPath);
