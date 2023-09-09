@@ -1,44 +1,39 @@
 const http = require("http");
 const fs = require("fs");
+const path = require("path");
+const { mimeTypes } = require("./types/mimeTypes");
 
 const PORT = 777;
 
-const pathToContacts = "./pages/contacts.html";
-
-// ----------------------------------------------------------------
-// http
-//   .createServer((req, res) => {
-//     console.log("Hello");
-//     console.log(req.url);
-//     console.log(req.method);
-
-//     res.setHeader("Content-Type", "text/html", "charset=utf-8");
-//     res.write("<main class='App'><h1>Hello World</h1><p>Hi, Admin</p></main>");
-//     res.end();
-//   })
-//   .listen(PORT);
-// ----------------------------------------------------------------
+const staticFile = (response, filePath, expansion) => {
+  response.setHeader("Content-Type", mimeTypes[expansion]);
+  fs.readFile("./public" + filePath, (err, data) => {
+    err ? response.end("Error") : response.end(data);
+  });
+};
 
 http
   .createServer((req, res) => {
     const URL = req.url;
 
+    const error = () => {
+      console.log("Error");
+      res.statusCode = 404;
+      res.end();
+    };
+
     switch (URL) {
       case "/":
-        console.log("Main page");
-        res.write("<h2>Main page</h2>");
-        break;
-      case "/child":
-        console.log("Child page");
-        let data = fs.readFileSync(pathToContacts, "utf8");
-        res.write(data);
+        console.log("contact page");
+        staticFile(res, "/contacts.html", ".html");
         break;
       default:
-        console.log("Unknown page");
-        res.write("<h2>Unknown page</h2>");
-        break;
+        const extname = String(path.extname(URL)).toLocaleLowerCase();
+        if (extname in mimeTypes) {
+          staticFile(res, URL, extname);
+        } else {
+          error();
+        }
     }
-
-    res.end();
   })
   .listen(PORT);
