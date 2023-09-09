@@ -1,36 +1,44 @@
+const http = require("http");
 const fs = require("fs");
 
-const pathToUser = "./jsons/user.json";
-const pathToUser2 = "./jsons/user2.json";
+const PORT = 777;
 
-// Reading the json file
-const data = fs.readFileSync(pathToUser, "utf-8");
-const dataToObj = JSON.parse(data);
-console.log(dataToObj);
+const pathToContacts = "./pages/contacts.html";
 
-// Writing the json file
-const obj = {
-  name: "John Smith",
-  age: 25,
-  email: "john.smith@example.com",
-  address: {
-    street: "123 Main Street",
-    city: "New York",
-    state: "NY",
-    postalCode: "10001",
-  },
-  interests: ["hiking", "photography", "reading"],
-  education: [
-    {
-      degree: "Bachelor of Science",
-      major: "Computer Science",
-      university: "ABC University",
-    },
-    {
-      degree: "Master of Business Administration",
-      major: "Finance",
-      university: "XYZ University",
-    },
-  ],
-};
-fs.writeFileSync(pathToUser2, JSON.stringify(obj), "utf-8");
+// ----------------------------------------------------------------
+// http
+//   .createServer((req, res) => {
+//     console.log("Hello");
+//     console.log(req.url);
+//     console.log(req.method);
+
+//     res.setHeader("Content-Type", "text/html", "charset=utf-8");
+//     res.write("<main class='App'><h1>Hello World</h1><p>Hi, Admin</p></main>");
+//     res.end();
+//   })
+//   .listen(PORT);
+// ----------------------------------------------------------------
+
+http
+  .createServer((req, res) => {
+    const URL = req.url;
+
+    switch (URL) {
+      case "/":
+        console.log("Main page");
+        res.write("<h2>Main page</h2>");
+        break;
+      case "/child":
+        console.log("Child page");
+        let data = fs.readFileSync(pathToContacts, "utf8");
+        res.write(data);
+        break;
+      default:
+        console.log("Unknown page");
+        res.write("<h2>Unknown page</h2>");
+        break;
+    }
+
+    res.end();
+  })
+  .listen(PORT);
